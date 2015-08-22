@@ -25,10 +25,19 @@
 #import <ImageIO/ImageIO.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
+#if TARGET_OS_WATCH
+#import <WatchKit/WatchKit.h>
+#endif
+
 NSString * const AnimatedGIFImageErrorDomain = @"com.compuserve.gif.image.error";
 
 __attribute__((overloadable)) UIImage * UIImageWithAnimatedGIFData(NSData *data) {
-    return UIImageWithAnimatedGIFData(data, [[UIScreen mainScreen] scale], 0.0f, nil);
+#if TARGET_OS_WATCH
+    CGFloat screenScale = [[WKInterfaceDevice currentDevice] screenScale];
+#else
+    CGFloat screenScale = [[UIScreen mainScreen] scale];
+#endif
+    return UIImageWithAnimatedGIFData(data, screenScale, 0.0f, nil);
 }
 
 __attribute__((overloadable)) UIImage * UIImageWithAnimatedGIFData(NSData *data, CGFloat scale, NSTimeInterval duration, NSError * __autoreleasing *error) {
